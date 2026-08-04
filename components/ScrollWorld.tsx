@@ -20,7 +20,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 import type { WorldConfig } from '@/lib/scroll-world';
 
 export function ScrollWorld({ config }: { config: WorldConfig }) {
@@ -268,18 +268,13 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
           0%,100% { opacity:.25; transform:scaleY(1);    }
           50%      { opacity:.7;  transform:scaleY(1.15); }
         }
-        @media (max-width: 768px) {
-          .hero-card-col { display: none !important; }
-        }
-        .sticky > div::-webkit-scrollbar { display: none; }
       `}</style>
     </div>
   );
 }
 
 /* ══════════════════════════════════════════════════════
-   HeroLayout — the split left/right hero content panel
-   shown at both entry and end of scroll
+   HeroLayout — centred hero panel, shown at entry + end
 ══════════════════════════════════════════════════════ */
 function HeroLayout({
   opacity, reveal, pointerEvents,
@@ -301,200 +296,119 @@ function HeroLayout({
   return (
     <div style={{
       position: 'absolute', inset: 0,
-      display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'clamp(80px, 10vh, 110px)',
-      paddingBottom: 'clamp(16px, 2.5vh, 32px)',
-      paddingLeft: 'clamp(1.5rem, 5vw, 5rem)',
-      paddingRight: 'clamp(1.5rem, 5vw, 5rem)',
-      overflowY: 'auto',
-      scrollbarWidth: 'none',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      textAlign: 'center',
+      padding: 'clamp(80px, 10vh, 110px) clamp(1.5rem, 6vw, 6rem) clamp(16px, 3vh, 40px)',
       opacity,
       pointerEvents,
     }}>
-      {/* ── Left column ── */}
-      <div style={{ flex: '0 0 auto', width: 'min(55%, 600px)', paddingRight: '2rem' }}>
 
-        {/* Eyebrow */}
-        <div style={up(0, 20)}>
-          <span style={{
-            fontSize: '0.6rem', letterSpacing: '0.32em',
-            textTransform: 'uppercase', color: 'rgba(255,255,255,0.50)',
-          }}>
-            {eyebrow ?? 'Interior Design Studio · Bhubaneswar'}
-          </span>
-        </div>
-
-        {/* Headline */}
-        <div style={{ marginTop: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
-          <div style={up(0.06, 44)}>
-            <h1 style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
-              fontWeight: 700,
-              letterSpacing: '-0.03em',
-              lineHeight: 1.02,
-              color: '#fff',
-              margin: 0,
-            }}>
-              {headline}
-            </h1>
-          </div>
-          {headlineHighlight && (
-            <div style={up(0.14, 44)}>
-              <span style={{
-                display: 'block',
-                fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(2rem, 4vw, 4rem)',
-                fontWeight: 300,
-                fontStyle: 'italic',
-                color: 'rgba(255,255,255,0.50)',
-                letterSpacing: '-0.015em',
-                lineHeight: 1.1,
-                marginTop: '0.15rem',
-              }}>
-                {headlineHighlight}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Description */}
-        <div style={up(0.22, 24)}>
-          <p style={{
-            marginTop: 'clamp(0.75rem, 1.5vh, 1.5rem)',
-            fontSize: '0.95rem',
-            lineHeight: 1.8,
-            color: 'rgba(255,255,255,0.55)',
-            maxWidth: 460,
-          }}>
-            {description}
-          </p>
-        </div>
-
-        {/* CTA */}
-        <div style={{ ...up(0.30, 20), marginTop: 'clamp(1rem, 2vh, 2rem)' }}>
-          <Link href={primaryCta.href} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 10,
-            padding: '13px 28px',
-            borderRadius: 999,
-            border: '1.5px solid rgba(255,255,255,0.70)',
-            color: '#fff',
-            fontSize: '0.78rem',
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            textDecoration: 'none',
-            backdropFilter: 'blur(8px)',
-            background: 'rgba(255,255,255,0.08)',
-          }}>
-            {primaryCta.label}
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: 28, height: 28, borderRadius: '50%',
-              background: '#fff',
-            }}>
-              <ArrowRight size={14} color="#111" />
-            </span>
-          </Link>
-        </div>
-
-        {/* Stats row */}
-        <div style={{ ...up(0.40, 16), marginTop: 'clamp(1.25rem, 2.5vh, 3rem)', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          {[
-            { num: '50+',  label: 'Homes\nDelivered' },
-            { num: '10+',  label: 'Years of\nExcellence' },
-            { num: '100%', label: 'Client\nSatisfaction' },
-          ].map(({ num, label }) => (
-            <div key={num} style={{
-              padding: '14px 20px',
-              borderRadius: 12,
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              backdropFilter: 'blur(10px)',
-              minWidth: 90,
-            }}>
-              <div style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(1.6rem, 3vw, 2.4rem)',
-                fontWeight: 600,
-                color: '#fff',
-                lineHeight: 1,
-              }}>{num}</div>
-              <div style={{
-                fontSize: '0.65rem',
-                lineHeight: 1.4,
-                color: 'rgba(255,255,255,0.45)',
-                marginTop: 6,
-                whiteSpace: 'pre-line',
-              }}>{label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Scroll hint (entry only) */}
-        {scrollHint && (
-          <div style={{
-            marginTop: 'clamp(1rem, 2vh, 2.5rem)',
-            display: 'flex', alignItems: 'center', gap: 10,
-          }}>
-            <div style={{
-              width: 1, height: 40,
-              background: 'rgba(255,255,255,0.28)',
-              animation: 'sw-pulse 2s ease-in-out infinite',
-            }} />
-            <span style={{
-              fontSize: '0.55rem', letterSpacing: '0.28em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)',
-            }}>Scroll to enter</span>
-          </div>
-        )}
-      </div>
-
-      {/* ── Right column — floating project card ── */}
-      <div style={{
-        ...up(0.18, 48),
-        flex: '0 0 auto',
-        width: 'min(40%, 420px)',
-        marginLeft: 'auto',
-        alignSelf: 'flex-start',
-        paddingTop: 16,
-      }} className="hero-card-col">
-        <div style={{
-          borderRadius: 20,
-          overflow: 'hidden',
-          position: 'relative',
-          aspectRatio: '4/5',
-          boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
-          border: '1px solid rgba(255,255,255,0.10)',
+      {/* ── Badge pill ── */}
+      <div style={up(0, 16)}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 9,
+          padding: '9px 20px',
+          borderRadius: 999,
+          background: 'rgba(255,255,255,0.10)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          fontSize: '0.72rem',
+          fontWeight: 500,
+          letterSpacing: '0.04em',
+          color: 'rgba(255,255,255,0.88)',
         }}>
-          {/* Project image */}
-          <img
-            src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt="Interior project by Decorecy"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-
-          {/* Testimonial overlay */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            padding: '1.25rem 1.25rem 1.5rem',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
-          }}>
-            <p style={{
-              fontSize: '0.78rem', lineHeight: 1.55,
-              color: 'rgba(255,255,255,0.88)', margin: 0,
-            }}>
-              "Decorecy transformed our home into something we never imagined possible."
-            </p>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 6, marginTop: 8,
-            }}>
-              <span style={{ color: '#f5c842', fontSize: '0.7rem', letterSpacing: 1 }}>★★★★★</span>
-              <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)' }}>— Priya Mohanty</span>
-            </div>
-          </div>
-        </div>
+          <span style={{
+            width: 7, height: 7, borderRadius: '50%',
+            background: '#c9a96e', flexShrink: 0,
+            boxShadow: '0 0 6px #c9a96e',
+          }} />
+          {eyebrow ?? 'Premium Interior Design Studio'}
+        </span>
       </div>
+
+      {/* ── Headline ── */}
+      <div style={{ ...up(0.08, 50), marginTop: 'clamp(1.25rem, 2.5vh, 2rem)' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-serif)',
+          fontSize: 'clamp(3rem, 7.5vw, 7rem)',
+          fontWeight: 700,
+          letterSpacing: '-0.03em',
+          lineHeight: 1.0,
+          color: '#fff',
+          margin: 0,
+        }}>
+          {headline}
+          {headlineHighlight && (
+            <>
+              {' '}
+              <span style={{ color: '#c9a96e' }}>{headlineHighlight}</span>
+            </>
+          )}
+        </h1>
+      </div>
+
+      {/* ── Description ── */}
+      <div style={{ ...up(0.20, 24), marginTop: 'clamp(1rem, 2vh, 1.75rem)' }}>
+        <p style={{
+          fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)',
+          lineHeight: 1.75,
+          color: 'rgba(255,255,255,0.58)',
+          maxWidth: 580,
+          margin: '0 auto',
+        }}>
+          {description}
+        </p>
+      </div>
+
+      {/* ── CTA button ── */}
+      <div style={{ ...up(0.30, 20), marginTop: 'clamp(1.5rem, 3vh, 2.5rem)' }}>
+        <Link href={primaryCta.href} style={{
+          display: 'inline-flex', alignItems: 'center', gap: 11,
+          padding: '15px 36px',
+          borderRadius: 999,
+          background: 'rgba(255,255,255,0.92)',
+          color: '#111',
+          fontSize: '0.88rem',
+          fontWeight: 600,
+          letterSpacing: '0.01em',
+          textDecoration: 'none',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+          transition: 'transform 0.2s, background 0.2s',
+        }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 30, height: 30, borderRadius: '50%',
+            background: '#111',
+            color: '#fff',
+            flexShrink: 0,
+          }}>
+            <Phone size={14} />
+          </span>
+          {primaryCta.label}
+        </Link>
+      </div>
+
+      {/* ── Scroll hint (entry only) ── */}
+      {scrollHint && (
+        <div style={{
+          ...up(0.45, 12),
+          marginTop: 'clamp(2rem, 4vh, 3.5rem)',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', gap: 10,
+        }}>
+          <span style={{
+            fontSize: '0.55rem', letterSpacing: '0.28em',
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)',
+          }}>Scroll Down</span>
+          <div style={{
+            width: 1, height: 44,
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0.35), transparent)',
+            animation: 'sw-pulse 2s ease-in-out infinite',
+          }} />
+        </div>
+      )}
     </div>
   );
 }

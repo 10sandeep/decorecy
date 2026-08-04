@@ -31,11 +31,11 @@ export default function HomePage() {
             label: 'Step Inside',
           },
         ],
-        eyebrow: 'Interior Design Studio · Bhubaneswar',
-        headline: 'Beautiful, functional interiors',
-        headlineHighlight: 'designed around your life',
+        eyebrow: 'Premium Interior Design Studio · Bhubaneswar',
+        headline: 'Designing Spaces That Feel Like',
+        headlineHighlight: 'Home.',
         description:
-          'Decorecy Interiors creates personalized, beautifully executed home and commercial interiors across Bhubaneswar.',
+          'We craft warm, timeless interiors that balance beauty, comfort, and function — thoughtfully designed to elevate your everyday living.',
         primaryCta:   { label: 'Book Free Consultation', href: '/contact' },
         secondaryCta: { label: 'View Our Projects',      href: '/projects' },
       }} />
