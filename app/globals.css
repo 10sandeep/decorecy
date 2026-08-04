@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 30% 99%;
+    --foreground: 20 14% 12%;
+    --card: 40 30% 99%;
+    --card-foreground: 20 14% 12%;
+    --popover: 40 30% 99%;
+    --popover-foreground: 20 14% 12%;
+    --primary: 20 14% 12%;
+    --primary-foreground: 40 30% 99%;
+    --secondary: 40 20% 94%;
+    --secondary-foreground: 20 14% 12%;
+    --muted: 40 15% 95%;
+    --muted-foreground: 20 10% 42%;
+    --accent: 28 35% 52%;
+    --accent-foreground: 40 30% 99%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 40 30% 99%;
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 28 35% 52%;
+    --chart-1: 28 35% 52%;
+    --chart-2: 160 30% 40%;
+    --chart-3: 200 40% 45%;
+    --chart-4: 40 70% 55%;
+    --chart-5: 340 50% 50%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 20 14% 8%;
+    --foreground: 40 25% 96%;
+    --card: 20 14% 10%;
+    --card-foreground: 40 25% 96%;
+    --popover: 20 14% 10%;
+    --popover-foreground: 40 25% 96%;
+    --primary: 40 25% 96%;
+    --primary-foreground: 20 14% 8%;
+    --secondary: 20 10% 16%;
+    --secondary-foreground: 40 25% 96%;
+    --muted: 20 10% 16%;
+    --muted-foreground: 40 15% 65%;
+    --accent: 28 40% 58%;
+    --accent-foreground: 20 14% 8%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 40 25% 96%;
+    --border: 20 10% 20%;
+    --input: 20 10% 20%;
+    --ring: 28 40% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  ::selection {
+    @apply bg-foreground text-background;
+  }
+}
+
+@layer components {
+  .font-serif {
+    font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
