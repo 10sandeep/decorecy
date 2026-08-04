@@ -1,3 +1,5 @@
+import { SectionHeading, StaggerGrid, AnimatedCard } from '@/components/motion';
+
 const steps = [
   {
     number: '01',
@@ -41,7 +43,7 @@ export function ProcessTimeline() {
   return (
     <section className="py-16 lg:py-24 bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
+        <SectionHeading className="max-w-2xl">
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
             How It Works
           </span>
@@ -52,31 +54,33 @@ export function ProcessTimeline() {
             A clear, step-by-step process so you always know what comes next —
             from the first conversation to the final handover.
           </p>
-        </div>
+        </SectionHeading>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+        <StaggerGrid className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
           {steps.map((step, index) => (
-            <div key={step.number} className="relative">
-              <div className="flex items-baseline gap-4">
-                <span className="font-serif text-5xl font-light text-foreground/20">
-                  {step.number}
-                </span>
-                <div className="h-px flex-1 bg-border" />
-              </div>
-              <h3 className="mt-4 font-serif text-xl font-semibold tracking-tight">
-                {step.title}
-              </h3>
-              <p className="mt-2.5 text-sm text-muted-foreground leading-relaxed">
-                {step.description}
-              </p>
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute -right-3 top-6 text-foreground/20">
-                  →
+            <AnimatedCard key={step.number}>
+              <div className="relative">
+                <div className="flex items-baseline gap-4">
+                  <span className="font-serif text-5xl font-light text-foreground/20">
+                    {step.number}
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
                 </div>
-              )}
-            </div>
+                <h3 className="mt-4 font-serif text-xl font-semibold tracking-tight">
+                  {step.title}
+                </h3>
+                <p className="mt-2.5 text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+                {index < steps.length - 1 && (
+                  <div className="hidden lg:block absolute -right-3 top-6 text-foreground/20">
+                    →
+                  </div>
+                )}
+              </div>
+            </AnimatedCard>
           ))}
-        </div>
+        </StaggerGrid>
       </div>
     </section>
   );

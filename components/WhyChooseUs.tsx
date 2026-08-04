@@ -1,4 +1,5 @@
 import { Sparkles, Ruler, Gem, MessageSquare, Workflow, MapPin } from 'lucide-react';
+import { SectionHeading, StaggerGrid, AnimatedCard } from '@/components/motion';
 
 const reasons = [
   {
@@ -43,7 +44,7 @@ export function WhyChooseUs() {
   return (
     <section id="why-decorecy" className="py-16 lg:py-24 scroll-mt-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
+        <SectionHeading className="max-w-2xl">
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
             Why Decorecy
           </span>
@@ -54,26 +55,25 @@ export function WhyChooseUs() {
             We focus on the things that make a real difference to your home and
             your experience — planning, materials, communication and execution.
           </p>
-        </div>
+        </SectionHeading>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StaggerGrid className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {reasons.map((reason) => (
-            <div
-              key={reason.title}
-              className="p-7 rounded-xl border border-border bg-card hover:shadow-md transition-shadow"
-            >
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-foreground/5">
-                <reason.icon className="h-6 w-6" />
+            <AnimatedCard key={reason.title}>
+              <div className="p-7 rounded-xl border border-border bg-card hover:shadow-md transition-shadow h-full">
+                <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-foreground/5">
+                  <reason.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 font-serif text-xl font-semibold tracking-tight">
+                  {reason.title}
+                </h3>
+                <p className="mt-2.5 text-sm text-muted-foreground leading-relaxed">
+                  {reason.description}
+                </p>
               </div>
-              <h3 className="mt-5 font-serif text-xl font-semibold tracking-tight">
-                {reason.title}
-              </h3>
-              <p className="mt-2.5 text-sm text-muted-foreground leading-relaxed">
-                {reason.description}
-              </p>
-            </div>
+            </AnimatedCard>
           ))}
-        </div>
+        </StaggerGrid>
       </div>
     </section>
   );
