@@ -20,27 +20,36 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Phone, Facebook, Instagram, Youtube, MoveDown } from 'lucide-react';
+import { Phone, Facebook, Instagram, Youtube, MoveDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { siteConfig } from '@/lib/site-config';
 import type { WorldConfig } from '@/lib/scroll-world';
 
+/* ── Layout constants ── */
+const STRIP_H  = 72;              // white strip height below video card (px)
+const TAB_RISE = 56;              // how many px tabs extend INTO the video area
+const TAB_H    = STRIP_H + TAB_RISE; // total tab height
+
+/* ── Framer Motion variants ── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export function ScrollWorld({ config }: { config: WorldConfig }) {
   const { scenes, headline, headlineHighlight, description,
-          primaryCta, secondaryCta, eyebrow } = config;
+          primaryCta, eyebrow } = config;
 
   /* ── refs ── */
   const containerRef   = useRef<HTMLDivElement>(null);
   const videoRefs      = useRef<(HTMLVideoElement | null)[]>([]);
-  const scrollPos      = useRef(0);       // raw scroll progress 0-1
-  const targetRate     = useRef(0);       // desired playback rate (from velocity)
-  const activeRate     = useRef(0);       // smoothed playback rate
+  const scrollPos      = useRef(0);
+  const targetRate     = useRef(0);
+  const activeRate     = useRef(0);
   const lastScrollY    = useRef(0);
   const lastScrollMs   = useRef(0);
   const rafId          = useRef<number>();
 
   /* ── state ── */
-  const [sceneMeta, setSceneMeta]         = useState<{ duration: number; scrollPx: number }[]>([]);
-  const [totalHeight, setTotalHeight]     = useState(0);
+  const [sceneMeta, setSceneMeta]           = useState<{ duration: number; scrollPx: number }[]>([]);
+  const [totalHeight, setTotalHeight]       = useState(0);
   const [globalProgress, setGlobalProgress] = useState(0);
 
   /* ── load metadata for all videos ── */
@@ -78,18 +87,15 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
 
     const totalScroll = sceneMeta.reduce((s, m) => s + m.scrollPx, 0);
 
-    /* Build cumulative scroll thresholds once */
     const thresholds = sceneMeta.map((_, i) =>
       sceneMeta.slice(0, i + 1).reduce((s, m) => s + m.scrollPx, 0)
     );
 
-    /* ── scroll event: capture velocity ── */
     const onScroll = () => {
       const now = performance.now();
       const dt  = Math.max(now - lastScrollMs.current, 1);
       const dy  = window.scrollY - lastScrollY.current;
 
-      /* Convert px/ms → playback rate for the current scene */
       const scrolled = -container.getBoundingClientRect().top;
       scrollPos.current = Math.min(Math.max(scrolled / totalScroll, 0), 1);
 
@@ -97,7 +103,6 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
       const sceneIdx    = getSceneIndex(rawScrolled, thresholds);
       const pxPerSec    = scenes[sceneIdx]?.scrollPxPerSecond ?? 120;
 
-      /* velocity (px/ms) * 1000 (ms/s) / (px per video-second) = playback rate */
       const rate = (dy / dt) * 1000 / pxPerSec;
       targetRate.current = Math.max(0, Math.min(12, rate));
 
@@ -105,9 +110,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
       lastScrollMs.current = now;
     };
 
-    /* ── RAF tick: smooth playback ── */
     const tick = () => {
-      /* 1. Decay target rate (scrolling inertia), lerp active rate */
       targetRate.current  *= 0.80;
       activeRate.current  += (targetRate.current - activeRate.current) * 0.25;
 
@@ -117,44 +120,32 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
       const m           = sceneMeta[sceneIdx];
       const vid         = videoRefs.current[sceneIdx];
 
-      const elapsed     = thresholds[sceneIdx - 1] ?? 0;
-      const localP      = Math.min((rawScrolled - elapsed) / m.scrollPx, 1);
-      const targetTime  = localP * m.duration;
+      const elapsed    = thresholds[sceneIdx - 1] ?? 0;
+      const localP     = Math.min((rawScrolled - elapsed) / m.scrollPx, 1);
+      const targetTime = localP * m.duration;
 
       if (vid && vid.readyState >= 2) {
         if (rate > 0.06) {
-          /* ── SCROLLING: drive with playbackRate — zero seeks, silky smooth ── */
           const clamped = Math.max(0.0625, Math.min(12, rate));
           if (vid.paused) vid.play().catch(() => {});
           vid.playbackRate = clamped;
-
-          /* Silent drift correction: only seek if very far off */
-          if (Math.abs(vid.currentTime - targetTime) > 1.2) {
-            vid.currentTime = targetTime;
-          }
+          if (Math.abs(vid.currentTime - targetTime) > 1.2) vid.currentTime = targetTime;
         } else {
-          /* ── STOPPED: pause and snap to exact frame (one seek, invisible) ── */
           if (!vid.paused) { vid.pause(); vid.playbackRate = 1; }
-          if (Math.abs(vid.currentTime - targetTime) > 0.03) {
-            vid.currentTime = targetTime;
-          }
+          if (Math.abs(vid.currentTime - targetTime) > 0.03) vid.currentTime = targetTime;
         }
       }
 
-      /* ── Manage non-active scene videos ── */
       videoRefs.current.forEach((v, i) => {
         if (!v || i === sceneIdx) return;
         if (!v.paused) { v.pause(); v.playbackRate = 1; }
-        /* Park each inactive video at its boundary frame */
         const boundary = i < sceneIdx ? sceneMeta[i]?.duration ?? 0 : 0;
         if (Math.abs(v.currentTime - boundary) > 0.05) v.currentTime = boundary;
       });
 
-      /* ── Update React state (coarse — drives text reveal + progress bar) ── */
       const p = scrollPos.current;
       setGlobalProgress(p);
 
-      /* ── Navbar signal ── */
       const key = p < 1 ? 'true' : 'false';
       if (document.documentElement.dataset.heroActive !== key) {
         document.documentElement.dataset.heroActive = key;
@@ -181,40 +172,45 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
     };
   }, [totalHeight, sceneMeta, scenes]);
 
-  /* ── Entry text: fade in instantly, fully gone by 20% scroll ── */
+  /* ── derived animation values ── */
   const entryOpacity = globalProgress >= 0.20
     ? 0
     : Math.max(0, 1 - easeOutQuart(globalProgress / 0.20));
 
-  /* ── Closing text: last 20% of scroll ── */
   const endReveal = globalProgress < 0.80
     ? 0
     : easeOutQuart((globalProgress - 0.80) / 0.20);
 
-  const overlayDark = 0.50 + entryOpacity * 0.15 + endReveal * 0.18;
-
-  const BOTTOM_STRIP = 64; // px — white strip height
+  const overlayDark = 0.48 + entryOpacity * 0.14 + endReveal * 0.18;
 
   return (
     <div ref={containerRef} style={{ height: totalHeight > 0 ? totalHeight : '100vh' }}>
 
-      {/* ── Sticky wrapper — full viewport, white bg shows in bottom strip ── */}
+      {/* ══ Sticky viewport ══ */}
       <div style={{
         position: 'sticky', top: 0,
         height: '100vh',
+        /* page background shows in strip + behind tab curves */
         background: 'var(--background, #fff)',
-        display: 'flex', flexDirection: 'column',
+        overflow: 'hidden',
       }}>
 
-        {/* ── Video card — rounded bottom corners ── */}
-        <div style={{
-          flex: 1,
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: `0 0 28px 28px`,
-          background: '#080808',
-          minHeight: 0,
-        }}>
+        {/* ══ Video card — rounded bottom, subtle scale-in on mount ══ */}
+        <motion.div
+          initial={{ scale: 1.045 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.8, ease: EASE }}
+          style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0,
+            bottom: STRIP_H,
+            overflow: 'hidden',
+            borderRadius: '0 0 36px 36px',
+            background: '#080808',
+            transformOrigin: 'center center',
+            zIndex: 1,
+          }}
+        >
           {/* Video layers */}
           {scenes.map((scene, i) => (
             <video
@@ -235,7 +231,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             />
           ))}
 
-          {/* Base dark layer */}
+          {/* Dark overlay */}
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
             background: `rgba(0,0,0,${f(overlayDark)})`,
@@ -243,6 +239,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
 
           {/* ── ENTRY LAYOUT ── */}
           <HeroLayout
+            isEntry
             opacity={entryOpacity}
             reveal={1}
             pointerEvents={entryOpacity > 0.05 ? 'auto' : 'none'}
@@ -251,7 +248,6 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             description={description}
             primaryCta={primaryCta}
             eyebrow={eyebrow}
-            scrollHint={false}
           />
 
           {/* ── CLOSING LAYOUT ── */}
@@ -270,39 +266,68 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
           <div style={{
             position: 'absolute', bottom: 0, left: 0,
             height: 2, width: `${globalProgress * 100}%`,
-            background: 'rgba(255,255,255,0.40)',
+            background: 'rgba(255,255,255,0.35)',
             pointerEvents: 'none',
             transition: 'width 0.05s linear',
           }} />
-        </div>
+        </motion.div>
 
-        {/* ── Bottom strip ── */}
-        <div style={{
-          height: BOTTOM_STRIP,
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 clamp(1.25rem, 3vw, 2.5rem)',
-          flexShrink: 0,
-        }}>
-          {/* Scroll Down */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            color: 'var(--foreground, #111)',
-            opacity: 0.55,
-          }}>
+        {/* ══ Left architectural tab — Scroll Down ══ */}
+        <div
+          className="sw-tab"
+          style={{
+            position: 'absolute', bottom: 0, left: 0,
+            width: 'clamp(138px, 14vw, 196px)',
+            height: TAB_H,
+            background: 'var(--background, #fff)',
+            borderRadius: '0 30px 0 0',
+            zIndex: 20,
+            display: 'flex', flexDirection: 'column',
+            justifyContent: 'flex-end',
+            paddingBottom: 20, paddingLeft: 26,
+            gap: 6,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <span style={{
               fontSize: '0.72rem', fontWeight: 500,
               letterSpacing: '0.04em',
-            }}>Scroll Down</span>
-            <MoveDown size={14} strokeWidth={1.8} />
+              color: 'var(--foreground, #111)',
+              opacity: 0.55,
+            }}>
+              Scroll Down
+            </span>
+            <motion.div
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ lineHeight: 0 }}
+            >
+              <MoveDown size={13} style={{ color: 'var(--foreground, #111)', opacity: 0.50 }} />
+            </motion.div>
           </div>
+        </div>
 
-          {/* Social icons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* ══ Right architectural tab — Social icons ══ */}
+        <div
+          className="sw-tab"
+          style={{
+            position: 'absolute', bottom: 0, right: 0,
+            width: 'clamp(138px, 14vw, 196px)',
+            height: TAB_H,
+            background: 'var(--background, #fff)',
+            borderRadius: '30px 0 0 0',
+            zIndex: 20,
+            display: 'flex', flexDirection: 'column',
+            justifyContent: 'flex-end', alignItems: 'flex-end',
+            paddingBottom: 18, paddingRight: 26,
+            gap: 6,
+          }}
+        >
+          <div style={{ display: 'flex', gap: 9 }}>
             {[
-              { href: siteConfig.social.facebook,  label: 'Facebook',  icon: <Facebook  size={14} /> },
-              { href: siteConfig.social.instagram, label: 'Instagram', icon: <Instagram size={14} /> },
-              { href: siteConfig.social.youtube,   label: 'YouTube',   icon: <Youtube   size={14} /> },
+              { href: siteConfig.social.facebook,  label: 'Facebook',  icon: <Facebook  size={13} /> },
+              { href: siteConfig.social.instagram, label: 'Instagram', icon: <Instagram size={13} /> },
+              { href: siteConfig.social.youtube,   label: 'YouTube',   icon: <Youtube   size={13} /> },
             ].map(({ href, label, icon }) => (
               <a
                 key={label}
@@ -316,7 +341,15 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
                   background: 'var(--foreground, #111)',
                   color: 'var(--background, #fff)',
                   textDecoration: 'none',
-                  transition: 'opacity 0.2s',
+                  transition: 'background 0.2s, transform 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = '#c9a96e';
+                  (e.currentTarget as HTMLElement).style.transform = 'scale(1.10)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = 'var(--foreground, #111)';
+                  (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
                 }}
               >
                 {icon}
@@ -324,12 +357,16 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             ))}
           </div>
         </div>
+
       </div>
 
       <style>{`
         @keyframes sw-pulse {
           0%,100% { opacity:.25; transform:scaleY(1);    }
-          50%      { opacity:.7;  transform:scaleY(1.15); }
+          50%      { opacity:.70; transform:scaleY(1.15); }
+        }
+        @media (max-width: 600px) {
+          .sw-tab { display: none !important; }
         }
       `}</style>
     </div>
@@ -337,13 +374,16 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
 }
 
 /* ══════════════════════════════════════════════════════
-   HeroLayout — centred hero panel, shown at entry + end
+   HeroLayout
+   isEntry=true  → Framer Motion entrance animation
+   isEntry=false → simple opacity-driven (end of scroll)
 ══════════════════════════════════════════════════════ */
 function HeroLayout({
-  opacity, reveal, pointerEvents,
+  isEntry = false, opacity, reveal, pointerEvents,
   headline, headlineHighlight, description,
-  primaryCta, eyebrow, scrollHint,
+  primaryCta, eyebrow,
 }: {
+  isEntry?: boolean;
   opacity: number;
   reveal: number;
   pointerEvents: React.CSSProperties['pointerEvents'];
@@ -352,129 +392,201 @@ function HeroLayout({
   description: string;
   primaryCta: { label: string; href: string };
   eyebrow?: string;
-  scrollHint?: boolean;
 }) {
-  const up = (d: number, lift = 32) => fadeUp(reveal, d, lift);
+  const words          = headline.split(' ');
+  const highlightWords = headlineHighlight ? headlineHighlight.split(' ') : [];
+  const totalWords     = words.length + highlightWords.length;
 
-  return (
-    <div style={{
-      position: 'absolute', inset: 0,
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      textAlign: 'center',
-      padding: 'clamp(80px, 10vh, 110px) clamp(1.5rem, 6vw, 6rem) clamp(16px, 3vh, 40px)',
-      opacity,
-      pointerEvents,
-    }}>
+  const subtitleDelay = 0.32 + totalWords * 0.07 + 0.05;
+  const ctaDelay      = subtitleDelay + 0.18;
 
-      {/* ── Badge pill ── */}
-      <div style={up(0, 16)}>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: 9,
-          padding: '9px 20px',
-          borderRadius: 999,
-          background: 'rgba(255,255,255,0.10)',
-          border: '1px solid rgba(255,255,255,0.18)',
-          backdropFilter: 'blur(14px)',
-          WebkitBackdropFilter: 'blur(14px)',
-          fontSize: '0.72rem',
-          fontWeight: 500,
-          letterSpacing: '0.04em',
-          color: 'rgba(255,255,255,0.88)',
-        }}>
-          <span style={{
-            width: 7, height: 7, borderRadius: '50%',
-            background: '#c9a96e', flexShrink: 0,
-            boxShadow: '0 0 6px #c9a96e',
-          }} />
-          {eyebrow ?? 'Premium Interior Design Studio'}
-        </span>
-      </div>
+  const containerStyle: React.CSSProperties = {
+    position: 'absolute', inset: 0,
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center',
+    textAlign: 'center',
+    padding: 'clamp(80px, 10vh, 110px) clamp(1.5rem, 6vw, 6rem) clamp(16px, 3vh, 40px)',
+    opacity,
+    pointerEvents,
+  };
 
-      {/* ── Headline ── */}
-      <div style={{ ...up(0.08, 50), marginTop: 'clamp(1.25rem, 2.5vh, 2rem)' }}>
-        <h1 style={{
-          fontFamily: 'var(--font-serif)',
-          fontSize: 'clamp(3rem, 7.5vw, 7rem)',
-          fontWeight: 700,
-          letterSpacing: '-0.03em',
-          lineHeight: 1.0,
-          color: '#fff',
-          margin: 0,
-        }}>
-          {headline}
-          {headlineHighlight && (
-            <>
-              {' '}
-              <span style={{ color: '#c9a96e' }}>{headlineHighlight}</span>
-            </>
-          )}
-        </h1>
-      </div>
-
-      {/* ── Description ── */}
-      <div style={{ ...up(0.20, 24), marginTop: 'clamp(1rem, 2vh, 1.75rem)' }}>
-        <p style={{
-          fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)',
-          lineHeight: 1.75,
-          color: 'rgba(255,255,255,0.58)',
-          maxWidth: 580,
-          margin: '0 auto',
-        }}>
-          {description}
-        </p>
-      </div>
-
-      {/* ── CTA button ── */}
-      <div style={{ ...up(0.30, 20), marginTop: 'clamp(1.5rem, 3vh, 2.5rem)' }}>
-        <Link href={primaryCta.href} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 11,
-          padding: '15px 36px',
-          borderRadius: 999,
-          background: 'rgba(255,255,255,0.92)',
-          color: '#111',
-          fontSize: '0.88rem',
-          fontWeight: 600,
-          letterSpacing: '0.01em',
-          textDecoration: 'none',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
-          transition: 'transform 0.2s, background 0.2s',
-        }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 30, height: 30, borderRadius: '50%',
-            background: '#111',
-            color: '#fff',
-            flexShrink: 0,
-          }}>
-            <Phone size={14} />
-          </span>
-          {primaryCta.label}
-        </Link>
-      </div>
-
-      {/* ── Scroll hint (entry only) ── */}
-      {scrollHint && (
-        <div style={{
-          ...up(0.45, 12),
-          marginTop: 'clamp(2rem, 4vh, 3.5rem)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: 10,
-        }}>
-          <span style={{
-            fontSize: '0.55rem', letterSpacing: '0.28em',
-            textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)',
-          }}>Scroll Down</span>
-          <div style={{
-            width: 1, height: 44,
-            background: 'linear-gradient(to bottom, rgba(255,255,255,0.35), transparent)',
-            animation: 'sw-pulse 2s ease-in-out infinite',
-          }} />
+  /* ── CLOSING layout — simple, opacity-driven ── */
+  if (!isEntry) {
+    const up = (d: number) => fadeUp(reveal, d, 28);
+    return (
+      <div style={containerStyle}>
+        <div style={up(0)}>
+          <Badge eyebrow={eyebrow} />
         </div>
-      )}
+        <div style={{ ...up(0.08), marginTop: '1.5rem' }}>
+          <h2 style={headingStyle}>
+            {headline}{' '}
+            {headlineHighlight && <span style={{ color: '#c9a96e' }}>{headlineHighlight}</span>}
+          </h2>
+        </div>
+        <div style={{ ...up(0.20), marginTop: '1.25rem' }}>
+          <p style={subtitleStyle}>{description}</p>
+        </div>
+        <div style={{ ...up(0.30), marginTop: '2rem' }}>
+          <CtaButton href={primaryCta.href} label={primaryCta.label} />
+        </div>
+      </div>
+    );
+  }
+
+  /* ── ENTRY layout — Framer Motion entrance ── */
+  return (
+    <div style={containerStyle}>
+
+      {/* Badge */}
+      <motion.div
+        initial={{ opacity: 0, y: -18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+      >
+        <Badge eyebrow={eyebrow} />
+      </motion.div>
+
+      {/* Heading — word-by-word reveal */}
+      <h1 style={{ ...headingStyle, marginTop: 'clamp(1rem, 2vh, 1.75rem)' }}>
+        {words.map((word, i) => (
+          <span
+            key={i}
+            style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
+          >
+            <motion.span
+              style={{ display: 'inline-block' }}
+              initial={{ y: '105%' }}
+              animate={{ y: '0%' }}
+              transition={{ duration: 0.72, delay: 0.30 + i * 0.07, ease: EASE }}
+            >
+              {word}&nbsp;
+            </motion.span>
+          </span>
+        ))}
+        {highlightWords.map((word, i) => (
+          <span
+            key={`h${i}`}
+            style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
+          >
+            <motion.span
+              style={{ display: 'inline-block', color: '#c9a96e' }}
+              initial={{ y: '105%' }}
+              animate={{ y: '0%' }}
+              transition={{ duration: 0.72, delay: 0.30 + (words.length + i) * 0.07, ease: EASE }}
+            >
+              {word}{i < highlightWords.length - 1 ? ' ' : ''}
+            </motion.span>
+          </span>
+        ))}
+      </h1>
+
+      {/* Subtitle */}
+      <motion.p
+        style={{ ...subtitleStyle, marginTop: 'clamp(0.9rem, 1.8vh, 1.5rem)' }}
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.85, delay: subtitleDelay, ease: EASE }}
+      >
+        {description}
+      </motion.p>
+
+      {/* CTA */}
+      <motion.div
+        style={{ marginTop: 'clamp(1.5rem, 2.8vh, 2.25rem)' }}
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.75, delay: ctaDelay, ease: EASE }}
+      >
+        <CtaButton href={primaryCta.href} label={primaryCta.label} />
+      </motion.div>
+
     </div>
   );
 }
+
+/* ── Sub-components ── */
+
+function Badge({ eyebrow }: { eyebrow?: string }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 9,
+      padding: '9px 20px',
+      borderRadius: 999,
+      background: 'rgba(255,255,255,0.10)',
+      border: '1px solid rgba(255,255,255,0.22)',
+      backdropFilter: 'blur(14px)',
+      WebkitBackdropFilter: 'blur(14px)',
+      fontSize: '0.72rem', fontWeight: 500,
+      letterSpacing: '0.05em',
+      color: 'rgba(255,255,255,0.88)',
+    }}>
+      <span style={{
+        width: 7, height: 7, borderRadius: '50%',
+        background: '#c9a96e', flexShrink: 0,
+        boxShadow: '0 0 6px rgba(201,169,110,0.8)',
+      }} />
+      {eyebrow ?? 'Premium Interior Design Studio'}
+    </span>
+  );
+}
+
+function CtaButton({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 12,
+        padding: '16px 32px',
+        borderRadius: 999,
+        background: 'rgba(255,255,255,0.93)',
+        color: '#1a120b',
+        fontSize: '0.9rem', fontWeight: 650,
+        letterSpacing: '0.01em',
+        textDecoration: 'none',
+        boxShadow: '0 8px 36px rgba(0,0,0,0.28)',
+        transition: 'transform 300ms cubic-bezier(0.22,1,0.36,1), box-shadow 300ms cubic-bezier(0.22,1,0.36,1)',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 44px rgba(0,0,0,0.36)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 36px rgba(0,0,0,0.28)';
+      }}
+    >
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: 32, height: 32, borderRadius: '50%',
+        background: '#1a120b', color: '#fff', flexShrink: 0,
+      }}>
+        <Phone size={14} />
+      </span>
+      {label}
+    </Link>
+  );
+}
+
+/* ── Static styles ── */
+const headingStyle: React.CSSProperties = {
+  fontFamily: 'var(--font-serif)',
+  fontSize: 'clamp(2.8rem, 6.5vw, 6rem)',
+  fontWeight: 700,
+  letterSpacing: '-0.035em',
+  lineHeight: 0.97,
+  color: '#fff',
+  margin: 0,
+  maxWidth: '18ch',
+};
+
+const subtitleStyle: React.CSSProperties = {
+  fontSize: 'clamp(0.95rem, 1.5vw, 1.15rem)',
+  lineHeight: 1.72,
+  color: 'rgba(255,255,255,0.70)',
+  maxWidth: 580,
+  margin: '0 auto',
+};
 
 /* ── Utilities ── */
 
@@ -485,7 +597,6 @@ function getSceneIndex(rawScrolled: number, thresholds: number[]): number {
   return thresholds.length - 1;
 }
 
-/** inline style for a fade + slide-up element */
 function fadeUp(reveal: number, delay: number, lift: number): React.CSSProperties {
   const local = easeOutQuart(Math.min(Math.max((reveal - delay) / (1 - delay + 0.001), 0), 1));
   return { opacity: local, transform: `translateY(${lift * (1 - local)}px)` };
@@ -495,45 +606,4 @@ function easeOutQuart(t: number): number {
   return 1 - Math.pow(1 - t, 4);
 }
 
-/** round to 2 dp for style strings */
 function f(n: number) { return n.toFixed(2); }
-
-function Hairline() {
-  return <span style={{ display: 'inline-block', width: 28, height: 1, background: 'rgba(255,255,255,0.25)' }} />;
-}
-
-/* ── Static styles ── */
-const headlineStyle: React.CSSProperties = {
-  display: 'block',
-  fontFamily: 'var(--font-serif)',
-  fontSize: 'clamp(2.8rem, 7vw, 5.75rem)',
-  fontWeight: 600, letterSpacing: '-0.025em',
-  lineHeight: 1.04, color: '#fff',
-};
-
-const sublineStyle: React.CSSProperties = {
-  display: 'block',
-  fontFamily: 'var(--font-serif)',
-  fontSize: 'clamp(1.8rem, 4.5vw, 3.8rem)',
-  fontWeight: 300, fontStyle: 'italic',
-  letterSpacing: '-0.015em', lineHeight: 1.1,
-  color: 'rgba(255,255,255,0.50)', marginTop: '0.2rem',
-};
-
-const ctaPrimary: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: 8,
-  padding: '11px 26px', borderRadius: 999,
-  background: '#fff', color: '#111',
-  fontSize: '0.78rem', fontWeight: 600,
-  letterSpacing: '0.025em', textDecoration: 'none',
-};
-
-const ctaSecondary: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center',
-  padding: '11px 26px', borderRadius: 999,
-  background: 'rgba(255,255,255,0.08)',
-  border: '1px solid rgba(255,255,255,0.22)',
-  color: '#fff',
-  fontSize: '0.78rem', fontWeight: 500,
-  letterSpacing: '0.025em', textDecoration: 'none',
-};
