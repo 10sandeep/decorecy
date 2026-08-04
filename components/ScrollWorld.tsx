@@ -20,7 +20,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Phone } from 'lucide-react';
+import { ArrowRight, Phone, Facebook, Instagram, Youtube, MoveDown } from 'lucide-react';
+import { siteConfig } from '@/lib/site-config';
 import type { WorldConfig } from '@/lib/scroll-world';
 
 export function ScrollWorld({ config }: { config: WorldConfig }) {
@@ -192,75 +193,137 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
 
   const overlayDark = 0.50 + entryOpacity * 0.15 + endReveal * 0.18;
 
+  const BOTTOM_STRIP = 64; // px — white strip height
+
   return (
     <div ref={containerRef} style={{ height: totalHeight > 0 ? totalHeight : '100vh' }}>
 
-      {/* ── Sticky fullscreen viewport ── */}
+      {/* ── Sticky wrapper — full viewport, white bg shows in bottom strip ── */}
       <div style={{
         position: 'sticky', top: 0,
-        height: '100vh', overflow: 'hidden',
-        background: '#080808',
+        height: '100vh',
+        background: 'var(--background, #fff)',
+        display: 'flex', flexDirection: 'column',
       }}>
 
-        {/* Video layers */}
-        {scenes.map((scene, i) => (
-          <video
-            key={scene.src}
-            ref={(el) => { videoRefs.current[i] = el; }}
-            src={scene.src}
-            muted
-            playsInline
-            preload="auto"
-            style={{
-              position: 'absolute', inset: 0,
-              width: '100%', height: '100%',
-              objectFit: 'cover',
-              opacity: i === 0 ? 1 : 0,
-              transition: 'opacity 0.7s ease',
-              willChange: 'opacity',
-            }}
+        {/* ── Video card — rounded bottom corners ── */}
+        <div style={{
+          flex: 1,
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: `0 0 28px 28px`,
+          background: '#080808',
+          minHeight: 0,
+        }}>
+          {/* Video layers */}
+          {scenes.map((scene, i) => (
+            <video
+              key={scene.src}
+              ref={(el) => { videoRefs.current[i] = el; }}
+              src={scene.src}
+              muted
+              playsInline
+              preload="auto"
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                opacity: i === 0 ? 1 : 0,
+                transition: 'opacity 0.7s ease',
+                willChange: 'opacity',
+              }}
+            />
+          ))}
+
+          {/* Base dark layer */}
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: `rgba(0,0,0,${f(overlayDark)})`,
+          }} />
+
+          {/* ── ENTRY LAYOUT ── */}
+          <HeroLayout
+            opacity={entryOpacity}
+            reveal={1}
+            pointerEvents={entryOpacity > 0.05 ? 'auto' : 'none'}
+            headline={headline}
+            headlineHighlight={headlineHighlight}
+            description={description}
+            primaryCta={primaryCta}
+            eyebrow={eyebrow}
+            scrollHint={false}
           />
-        ))}
 
-        {/* Base dark layer */}
+          {/* ── CLOSING LAYOUT ── */}
+          <HeroLayout
+            opacity={endReveal}
+            reveal={endReveal}
+            pointerEvents={endReveal > 0.5 ? 'auto' : 'none'}
+            headline={headline}
+            headlineHighlight={headlineHighlight}
+            description={description}
+            primaryCta={primaryCta}
+            eyebrow={eyebrow}
+          />
+
+          {/* Progress bar */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0,
+            height: 2, width: `${globalProgress * 100}%`,
+            background: 'rgba(255,255,255,0.40)',
+            pointerEvents: 'none',
+            transition: 'width 0.05s linear',
+          }} />
+        </div>
+
+        {/* ── Bottom strip ── */}
         <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: `rgba(0,0,0,${f(overlayDark)})`,
-        }} />
+          height: BOTTOM_STRIP,
+          display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 clamp(1.25rem, 3vw, 2.5rem)',
+          flexShrink: 0,
+        }}>
+          {/* Scroll Down */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            color: 'var(--foreground, #111)',
+            opacity: 0.55,
+          }}>
+            <span style={{
+              fontSize: '0.72rem', fontWeight: 500,
+              letterSpacing: '0.04em',
+            }}>Scroll Down</span>
+            <MoveDown size={14} strokeWidth={1.8} />
+          </div>
 
-        {/* ── ENTRY LAYOUT — visible on load, fades as scroll starts ── */}
-        <HeroLayout
-          opacity={entryOpacity}
-          reveal={1}
-          pointerEvents={entryOpacity > 0.05 ? 'auto' : 'none'}
-          headline={headline}
-          headlineHighlight={headlineHighlight}
-          description={description}
-          primaryCta={primaryCta}
-          eyebrow={eyebrow}
-          scrollHint
-        />
-
-        {/* ── CLOSING LAYOUT — same layout, revealed at end of scroll ── */}
-        <HeroLayout
-          opacity={endReveal}
-          reveal={endReveal}
-          pointerEvents={endReveal > 0.5 ? 'auto' : 'none'}
-          headline={headline}
-          headlineHighlight={headlineHighlight}
-          description={description}
-          primaryCta={primaryCta}
-          eyebrow={eyebrow}
-        />
-
-        {/* Progress bar */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0,
-          height: 1.5, width: `${globalProgress * 100}%`,
-          background: 'rgba(255,255,255,0.38)',
-          pointerEvents: 'none',
-          transition: 'width 0.05s linear',
-        }} />
+          {/* Social icons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {[
+              { href: siteConfig.social.facebook,  label: 'Facebook',  icon: <Facebook  size={14} /> },
+              { href: siteConfig.social.instagram, label: 'Instagram', icon: <Instagram size={14} /> },
+              { href: siteConfig.social.youtube,   label: 'YouTube',   icon: <Youtube   size={14} /> },
+            ].map(({ href, label, icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  width: 36, height: 36, borderRadius: '50%',
+                  background: 'var(--foreground, #111)',
+                  color: 'var(--background, #fff)',
+                  textDecoration: 'none',
+                  transition: 'opacity 0.2s',
+                }}
+              >
+                {icon}
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
 
       <style>{`
