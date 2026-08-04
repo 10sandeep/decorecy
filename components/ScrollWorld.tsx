@@ -232,7 +232,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
         <HeroLayout
           opacity={entryOpacity}
           reveal={1}
-          pointerEvents="none"
+          pointerEvents={entryOpacity > 0.05 ? 'auto' : 'none'}
           headline={headline}
           headlineHighlight={headlineHighlight}
           description={description}
@@ -271,6 +271,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
         @media (max-width: 768px) {
           .hero-card-col { display: none !important; }
         }
+        .sticky > div::-webkit-scrollbar { display: none; }
       `}</style>
     </div>
   );
@@ -301,11 +302,12 @@ function HeroLayout({
     <div style={{
       position: 'absolute', inset: 0,
       display: 'flex', alignItems: 'flex-start',
-      /* navbar pill bottom ≈ 74px; use 100px (6.25rem) guaranteed clearance */
-      paddingTop: 100,
-      paddingBottom: 32,
+      paddingTop: 'clamp(80px, 10vh, 110px)',
+      paddingBottom: 'clamp(16px, 2.5vh, 32px)',
       paddingLeft: 'clamp(1.5rem, 5vw, 5rem)',
       paddingRight: 'clamp(1.5rem, 5vw, 5rem)',
+      overflowY: 'auto',
+      scrollbarWidth: 'none',
       opacity,
       pointerEvents,
     }}>
@@ -323,7 +325,7 @@ function HeroLayout({
         </div>
 
         {/* Headline */}
-        <div style={{ marginTop: '1rem' }}>
+        <div style={{ marginTop: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
           <div style={up(0.06, 44)}>
             <h1 style={{
               fontFamily: 'var(--font-serif)',
@@ -359,7 +361,7 @@ function HeroLayout({
         {/* Description */}
         <div style={up(0.22, 24)}>
           <p style={{
-            marginTop: '1.5rem',
+            marginTop: 'clamp(0.75rem, 1.5vh, 1.5rem)',
             fontSize: '0.95rem',
             lineHeight: 1.8,
             color: 'rgba(255,255,255,0.55)',
@@ -370,7 +372,7 @@ function HeroLayout({
         </div>
 
         {/* CTA */}
-        <div style={{ ...up(0.30, 20), marginTop: '2rem' }}>
+        <div style={{ ...up(0.30, 20), marginTop: 'clamp(1rem, 2vh, 2rem)' }}>
           <Link href={primaryCta.href} style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
             padding: '13px 28px',
@@ -397,7 +399,7 @@ function HeroLayout({
         </div>
 
         {/* Stats row */}
-        <div style={{ ...up(0.40, 16), marginTop: '3rem', display: 'flex', gap: '1.5rem' }}>
+        <div style={{ ...up(0.40, 16), marginTop: 'clamp(1.25rem, 2.5vh, 3rem)', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           {[
             { num: '50+',  label: 'Homes\nDelivered' },
             { num: '10+',  label: 'Years of\nExcellence' },
@@ -432,7 +434,7 @@ function HeroLayout({
         {/* Scroll hint (entry only) */}
         {scrollHint && (
           <div style={{
-            marginTop: '2.5rem',
+            marginTop: 'clamp(1rem, 2vh, 2.5rem)',
             display: 'flex', alignItems: 'center', gap: 10,
           }}>
             <div style={{
