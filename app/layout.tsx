@@ -4,6 +4,7 @@ import { Inter, Playfair_Display, Cormorant_Garamond } from 'next/font/google';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { PhoneButton } from '@/components/PhoneButton';
 import { StructuredData } from '@/components/StructuredData';
 import { siteConfig } from '@/lib/site-config';
 import {
@@ -100,6 +101,7 @@ export default function RootLayout({
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />
+        <PhoneButton />
         <WhatsAppButton />
       </body>
     </html>
