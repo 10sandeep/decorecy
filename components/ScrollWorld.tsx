@@ -190,8 +190,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
       <div style={{
         position: 'sticky', top: 0,
         height: '100vh',
-        /* page background shows in strip + behind tab curves */
-        background: 'var(--background, #fff)',
+        background: '#ffffff',
         overflow: 'hidden',
       }}>
 
@@ -277,32 +276,32 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
           className="sw-tab"
           style={{
             position: 'absolute', bottom: 0, left: 0,
-            width: 'clamp(138px, 14vw, 196px)',
+            width: 'clamp(148px, 16vw, 210px)',
             height: TAB_H,
-            background: 'var(--background, #fff)',
-            borderRadius: '0 30px 0 0',
+            background: '#ffffff',
+            borderRadius: '0 32px 0 0',
             zIndex: 20,
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-end',
-            paddingBottom: 20, paddingLeft: 26,
+            paddingBottom: 22, paddingLeft: 72,
             gap: 6,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{
-              fontSize: '0.72rem', fontWeight: 500,
-              letterSpacing: '0.04em',
-              color: 'var(--foreground, #111)',
-              opacity: 0.55,
+              fontSize: '0.68rem', fontWeight: 600,
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: '#111111',
+              opacity: 0.45,
             }}>
-              Scroll Down
+              Scroll
             </span>
             <motion.div
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               style={{ lineHeight: 0 }}
             >
-              <MoveDown size={13} style={{ color: 'var(--foreground, #111)', opacity: 0.50 }} />
+              <MoveDown size={12} style={{ color: '#111111', opacity: 0.40 }} />
             </motion.div>
           </div>
         </div>
@@ -312,22 +311,22 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
           className="sw-tab"
           style={{
             position: 'absolute', bottom: 0, right: 0,
-            width: 'clamp(138px, 14vw, 196px)',
+            width: 'clamp(148px, 16vw, 210px)',
             height: TAB_H,
-            background: 'var(--background, #fff)',
-            borderRadius: '30px 0 0 0',
+            background: '#ffffff',
+            borderRadius: '32px 0 0 0',
             zIndex: 20,
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-end', alignItems: 'flex-end',
-            paddingBottom: 18, paddingRight: 26,
+            paddingBottom: 22, paddingRight: 72,
             gap: 6,
           }}
         >
-          <div style={{ display: 'flex', gap: 9 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
             {[
-              { href: siteConfig.social.facebook,  label: 'Facebook',  icon: <Facebook  size={13} /> },
-              { href: siteConfig.social.instagram, label: 'Instagram', icon: <Instagram size={13} /> },
-              { href: siteConfig.social.youtube,   label: 'YouTube',   icon: <Youtube   size={13} /> },
+              { href: siteConfig.social.facebook,  label: 'Facebook',  icon: <Facebook  size={12} /> },
+              { href: siteConfig.social.instagram, label: 'Instagram', icon: <Instagram size={12} /> },
+              { href: siteConfig.social.youtube,   label: 'YouTube',   icon: <Youtube   size={12} /> },
             ].map(({ href, label, icon }) => (
               <a
                 key={label}
@@ -337,9 +336,9 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
                 aria-label={label}
                 style={{
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  width: 36, height: 36, borderRadius: '50%',
-                  background: 'var(--foreground, #111)',
-                  color: 'var(--background, #fff)',
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: '#111111',
+                  color: '#ffffff',
                   textDecoration: 'none',
                   transition: 'background 0.2s, transform 0.2s',
                 }}
@@ -348,7 +347,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
                   (e.currentTarget as HTMLElement).style.transform = 'scale(1.10)';
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = 'var(--foreground, #111)';
+                  (e.currentTarget as HTMLElement).style.background = '#111111';
                   (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
                 }}
               >
