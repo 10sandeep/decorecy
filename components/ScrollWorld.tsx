@@ -205,7 +205,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             top: 0, left: 0, right: 0,
             bottom: STRIP_H,
             overflow: 'hidden',
-            borderRadius: `0 0 ${CORNER_R}px ${CORNER_R}px`,
+            borderRadius: 0,
             background: '#080808',
             transformOrigin: 'center center',
             zIndex: 1,
@@ -277,7 +277,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
           className="sw-tab"
           style={{
             position: 'absolute', bottom: 0, left: 0,
-            width: 'clamp(148px, 16vw, 210px)',
+            width: 'clamp(180px, 18vw, 260px)',
             height: TAB_H,
             background: '#ffffff',
             borderRadius: `0 ${CORNER_R}px 0 0`,
@@ -312,7 +312,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
           className="sw-tab"
           style={{
             position: 'absolute', bottom: 0, right: 0,
-            width: 'clamp(148px, 16vw, 210px)',
+            width: 'clamp(180px, 18vw, 260px)',
             height: TAB_H,
             background: '#ffffff',
             borderRadius: `${CORNER_R}px 0 0 0`,
