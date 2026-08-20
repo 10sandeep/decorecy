@@ -283,25 +283,25 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             zIndex: 20,
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-end',
-            paddingBottom: 22, paddingLeft: 72,
+            paddingBottom: 24, paddingLeft: 78,
             gap: 6,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <span style={{
-              fontSize: '0.68rem', fontWeight: 600,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-              color: '#111111',
-              opacity: 0.45,
+              fontSize: '0.65rem', fontWeight: 600,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: '#111111', opacity: 0.50,
             }}>
               Scroll
             </span>
+            <span style={{ color: '#111111', opacity: 0.25, fontSize: '0.75rem', lineHeight: 1 }}>|</span>
             <motion.div
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               style={{ lineHeight: 0 }}
             >
-              <MoveDown size={12} style={{ color: '#111111', opacity: 0.40 }} />
+              <MoveDown size={11} style={{ color: '#111111', opacity: 0.45 }} />
             </motion.div>
           </div>
         </div>
@@ -318,7 +318,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             zIndex: 20,
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-end', alignItems: 'flex-end',
-            paddingBottom: 22, paddingRight: 72,
+            paddingBottom: 24, paddingRight: 78,
             gap: 6,
           }}
         >
