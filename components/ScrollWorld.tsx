@@ -26,9 +26,10 @@ import { siteConfig } from '@/lib/site-config';
 import type { WorldConfig } from '@/lib/scroll-world';
 
 /* ── Layout constants ── */
-const STRIP_H  = 88;              // white strip height below video card (px)
-const TAB_RISE = 60;              // how many px tabs extend INTO the video area
-const TAB_H    = STRIP_H + TAB_RISE; // total tab height
+const STRIP_H   = 88;              // white strip height below video card (px)
+const CORNER_R  = 100;             // corner radius — must equal TAB_RISE for smooth arc
+const TAB_RISE  = CORNER_R;        // tabs rise exactly one radius into the video area
+const TAB_H     = STRIP_H + TAB_RISE; // total tab height (188px)
 
 /* ── Framer Motion variants ── */
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -204,7 +205,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             top: 0, left: 0, right: 0,
             bottom: STRIP_H,
             overflow: 'hidden',
-            borderRadius: '0 0 56px 56px',
+            borderRadius: `0 0 ${CORNER_R}px ${CORNER_R}px`,
             background: '#080808',
             transformOrigin: 'center center',
             zIndex: 1,
@@ -279,7 +280,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             width: 'clamp(148px, 16vw, 210px)',
             height: TAB_H,
             background: '#ffffff',
-            borderRadius: '0 56px 0 0',
+            borderRadius: `0 ${CORNER_R}px 0 0`,
             zIndex: 20,
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -314,7 +315,7 @@ export function ScrollWorld({ config }: { config: WorldConfig }) {
             width: 'clamp(148px, 16vw, 210px)',
             height: TAB_H,
             background: '#ffffff',
-            borderRadius: '56px 0 0 0',
+            borderRadius: `${CORNER_R}px 0 0 0`,
             zIndex: 20,
             display: 'flex', flexDirection: 'column',
             justifyContent: 'flex-end', alignItems: 'flex-end',
