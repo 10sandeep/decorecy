@@ -26,8 +26,8 @@ import { siteConfig } from '@/lib/site-config';
 import type { WorldConfig } from '@/lib/scroll-world';
 
 /* ── Layout constants ── */
-const STRIP_H  = 72;              // white strip height below video card (px)
-const TAB_RISE = 56;              // how many px tabs extend INTO the video area
+const STRIP_H  = 88;              // white strip height below video card (px)
+const TAB_RISE = 60;              // how many px tabs extend INTO the video area
 const TAB_H    = STRIP_H + TAB_RISE; // total tab height
 
 /* ── Framer Motion variants ── */

@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { siteConfig } from '@/lib/site-config';
 
 function WhatsAppIcon() {
@@ -12,14 +11,6 @@ function WhatsAppIcon() {
 }
 
 export function WhatsAppButton() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 300);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   const href = `https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
     siteConfig.whatsappMessage
   )}`;
@@ -31,17 +22,22 @@ export function WhatsAppButton() {
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
       style={{
-        position: 'fixed', bottom: 22, right: 22, zIndex: 50,
+        position: 'fixed', bottom: 18, right: 18, zIndex: 60,
         width: 52, height: 52, borderRadius: '50%',
         background: '#c9a96e',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: '#fff',
         textDecoration: 'none',
-        boxShadow: '0 4px 18px rgba(201,169,110,0.50)',
-        transition: 'opacity 0.3s, transform 0.3s',
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(12px)',
-        pointerEvents: visible ? 'auto' : 'none',
+        boxShadow: '0 4px 20px rgba(201,169,110,0.55)',
+        transition: 'transform 0.25s, box-shadow 0.25s',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'scale(1.08)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 28px rgba(201,169,110,0.70)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(201,169,110,0.55)';
       }}
     >
       <WhatsAppIcon />
