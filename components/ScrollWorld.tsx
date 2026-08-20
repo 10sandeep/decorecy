@@ -43,10 +43,10 @@ import type { WorldConfig } from '@/lib/scroll-world';
 
 const STRIP_H = 92;
 
-// Rounded corners of bottom white section
-const CORNER_R = 72;
+// Larger radius = softer, more gradual curve (no pointed tip)
+const CORNER_R = 140;
 
-// How much the white tabs rise into the video
+// Tabs rise exactly one radius into the video area
 const TAB_RISE = CORNER_R;
 
 // Total height of bottom tabs
@@ -1095,7 +1095,7 @@ export function ScrollWorld({
             left: 0,
 
             width:
-              'clamp(210px, 20vw, 300px)',
+              'clamp(220px, 22vw, 320px)',
 
             height:
               TAB_H,
@@ -1264,7 +1264,7 @@ export function ScrollWorld({
             right: 0,
 
             width:
-              'clamp(260px, 24vw, 350px)',
+              'clamp(280px, 26vw, 380px)',
 
             height:
               TAB_H,
