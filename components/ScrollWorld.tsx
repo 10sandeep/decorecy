@@ -41,9 +41,10 @@ import type { WorldConfig } from '@/lib/scroll-world';
    LAYOUT CONSTANTS
 ══════════════════════════════════════════════════════ */
 
-const STRIP_H = 92;
-const CORNER_R = 48;   // video card bottom corner radius
-const TAB_H = STRIP_H; // tabs stay inside the white strip — no video overlap
+const STRIP_H  = 92;
+const CORNER_R = 80;               // corner arc radius
+const TAB_RISE = CORNER_R;         // tabs rise this far into the video
+const TAB_H    = STRIP_H + TAB_RISE; // 172px total
 
 
 /* ══════════════════════════════════════════════════════
@@ -905,7 +906,7 @@ export function ScrollWorld({
 
             overflow: 'hidden',
 
-            borderRadius: `0 0 ${CORNER_R}px ${CORNER_R}px`,
+            borderRadius: 0,
 
             background: '#080808',
 
@@ -1096,7 +1097,7 @@ export function ScrollWorld({
             background:
               '#ffffff',
 
-            borderRadius: 0,
+            borderRadius: `0 ${CORNER_R}px 0 0`,
 
             zIndex: 30,
 
@@ -1264,7 +1265,7 @@ export function ScrollWorld({
             background:
               '#ffffff',
 
-            borderRadius: 0,
+            borderRadius: `${CORNER_R}px 0 0 0`,
 
             zIndex: 30,
 
