@@ -42,15 +42,8 @@ import type { WorldConfig } from '@/lib/scroll-world';
 ══════════════════════════════════════════════════════ */
 
 const STRIP_H = 92;
-
-// Larger radius = softer, more gradual curve (no pointed tip)
-const CORNER_R = 140;
-
-// Tabs rise exactly one radius into the video area
-const TAB_RISE = CORNER_R;
-
-// Total height of bottom tabs
-const TAB_H = STRIP_H + TAB_RISE;
+const CORNER_R = 48;   // video card bottom corner radius
+const TAB_H = STRIP_H; // tabs stay inside the white strip — no video overlap
 
 
 /* ══════════════════════════════════════════════════════
@@ -912,7 +905,7 @@ export function ScrollWorld({
 
             overflow: 'hidden',
 
-            borderRadius: 0,
+            borderRadius: `0 0 ${CORNER_R}px ${CORNER_R}px`,
 
             background: '#080808',
 
@@ -1103,8 +1096,7 @@ export function ScrollWorld({
             background:
               '#ffffff',
 
-            borderRadius:
-              `0 ${CORNER_R}px 0 0`,
+            borderRadius: 0,
 
             zIndex: 30,
 
@@ -1272,8 +1264,7 @@ export function ScrollWorld({
             background:
               '#ffffff',
 
-            borderRadius:
-              `${CORNER_R}px 0 0 0`,
+            borderRadius: 0,
 
             zIndex: 30,
 
