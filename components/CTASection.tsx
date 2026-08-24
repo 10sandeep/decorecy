@@ -18,6 +18,7 @@ export function CTASection({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      borderRadius: '48px 48px 0 0',
     }}>
 
       {/* Background image */}
