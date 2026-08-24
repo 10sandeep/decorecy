@@ -26,9 +26,8 @@ import {
   Instagram,
   Youtube,
   MoveDown,
-  ArrowRight,
-  MessageCircle,
   MapPin,
+  ArrowRight,
 } from 'lucide-react';
 
 import { motion } from 'framer-motion';
@@ -606,273 +605,6 @@ export function ScrollWorld({
       >
 
 
-        {/* ═════════════════════════════════════════════
-            DECORECY NAVBAR
-        ═════════════════════════════════════════════ */}
-
-        <nav
-          style={{
-            position: 'absolute',
-
-            top: 20,
-
-            left: '50%',
-
-            transform:
-              'translateX(-50%)',
-
-            width:
-              'min(1150px, calc(100% - 80px))',
-
-            height: 68,
-
-            padding:
-              '8px 10px 8px 12px',
-
-            display: 'flex',
-
-            alignItems: 'center',
-
-            border:
-              '1px solid rgba(255,255,255,0.17)',
-
-            borderRadius: 40,
-
-            background:
-              'rgba(12,12,13,0.76)',
-
-            backdropFilter:
-              'blur(20px)',
-
-            WebkitBackdropFilter:
-              'blur(20px)',
-
-            boxShadow:
-              '0 12px 40px rgba(0,0,0,0.28)',
-
-            zIndex: 50,
-          }}
-        >
-
-          {/* LOGO */}
-
-          <div
-            style={{
-              display: 'flex',
-
-              alignItems: 'center',
-
-              gap: 12,
-
-              marginRight: 'auto',
-
-              color: '#fff',
-
-              fontSize: 17,
-
-              fontWeight: 600,
-            }}
-          >
-
-            <div
-              style={{
-                width: 40,
-
-                height: 40,
-
-                display: 'flex',
-
-                alignItems: 'center',
-
-                justifyContent:
-                  'center',
-
-                border:
-                  '1px solid rgba(255,255,255,0.25)',
-
-                borderRadius: 12,
-
-                color: '#fff',
-
-                fontSize: 16,
-
-                fontWeight: 600,
-              }}
-            >
-              D
-            </div>
-
-            <span>
-              Decorecy
-            </span>
-
-          </div>
-
-
-          {/* NAVIGATION LINKS */}
-
-          <div
-            className="sw-navbar-links"
-            style={{
-              display: 'flex',
-
-              alignItems: 'center',
-
-              gap: 4,
-            }}
-          >
-
-            {[
-              'Home',
-              'About',
-              'Services',
-              'Projects',
-              'Design Ideas',
-              'Why Decorecy',
-            ].map(
-              (
-                item,
-                index
-              ) => (
-
-                <Link
-                  key={item}
-                  href={
-                    index === 0
-                      ? '#home'
-                      : `#${item
-                          .toLowerCase()
-                          .replaceAll(
-                            ' ',
-                            '-'
-                          )}`
-                  }
-                  style={{
-                    padding:
-                      '11px 15px',
-
-                    borderRadius: 24,
-
-                    color:
-                      index === 0
-                        ? '#fff'
-                        : 'rgba(255,255,255,0.70)',
-
-                    background:
-                      index === 0
-                        ? 'rgba(255,255,255,0.14)'
-                        : 'transparent',
-
-                    textDecoration:
-                      'none',
-
-                    fontSize: 14,
-
-                    whiteSpace:
-                      'nowrap',
-
-                    transition:
-                      'all .25s ease',
-                  }}
-                >
-                  {item}
-                </Link>
-
-              )
-            )}
-
-          </div>
-
-
-          {/* DIVIDER */}
-
-          <div
-            className="sw-nav-divider"
-            style={{
-              width: 1,
-
-              height: 25,
-
-              margin:
-                '0 14px',
-
-              background:
-                'rgba(255,255,255,0.20)',
-            }}
-          />
-
-
-          {/* CONSULTATION BUTTON */}
-
-          <Link
-            href="/contact"
-            className="sw-nav-cta"
-            style={{
-              height: 46,
-
-              padding:
-                '0 9px 0 18px',
-
-              display: 'flex',
-
-              alignItems: 'center',
-
-              gap: 12,
-
-              color: '#fff',
-
-              textDecoration:
-                'none',
-
-              border:
-                '1px solid rgba(255,255,255,0.20)',
-
-              borderRadius: 30,
-
-              background:
-                'rgba(255,255,255,0.10)',
-
-              fontSize: 14,
-
-              fontWeight: 600,
-
-              whiteSpace:
-                'nowrap',
-            }}
-          >
-
-            <span>
-              Book Consultation
-            </span>
-
-            <span
-              style={{
-                width: 30,
-
-                height: 30,
-
-                display: 'flex',
-
-                alignItems: 'center',
-
-                justifyContent:
-                  'center',
-
-                borderRadius:
-                  '50%',
-
-                background:
-                  'rgba(255,255,255,0.20)',
-              }}
-            >
-              <ArrowRight
-                size={15}
-              />
-            </span>
-
-          </Link>
-
-        </nav>
 
 
         {/* ═════════════════════════════════════════════
@@ -1130,43 +862,6 @@ export function ScrollWorld({
             }}
           >
 
-            {/* PHONE CIRCLE */}
-
-            <div
-              style={{
-                width: 54,
-
-                height: 54,
-
-                flexShrink: 0,
-
-                display:
-                  'flex',
-
-                alignItems:
-                  'center',
-
-                justifyContent:
-                  'center',
-
-                borderRadius:
-                  '50%',
-
-                background:
-                  '#c9a96e',
-
-                color: '#fff',
-
-                boxShadow:
-                  '0 8px 25px rgba(0,0,0,0.15)',
-              }}
-            >
-              <Phone
-                size={20}
-              />
-            </div>
-
-
             {/* SCROLL TEXT */}
 
             <span
@@ -1360,61 +1055,6 @@ export function ScrollWorld({
             </SocialButton>
 
 
-            {/* WHATSAPP */}
-
-            <a
-              href="#contact"
-
-              aria-label="WhatsApp"
-
-              style={{
-                width: 48,
-
-                height: 48,
-
-                marginLeft: 2,
-
-                display:
-                  'flex',
-
-                alignItems:
-                  'center',
-
-                justifyContent:
-                  'center',
-
-                borderRadius:
-                  '50%',
-
-                background:
-                  '#c9a96e',
-
-                color: '#fff',
-
-                textDecoration:
-                  'none',
-
-                boxShadow:
-                  '0 8px 22px rgba(0,0,0,0.14)',
-
-                transition:
-                  'transform .25s ease',
-              }}
-
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform =
-                  'translateY(-3px)';
-              }}
-
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform =
-                  'translateY(0)';
-              }}
-            >
-              <MessageCircle
-                size={19}
-              />
-            </a>
 
           </div>
 
@@ -1442,19 +1082,6 @@ export function ScrollWorld({
           }
 
 
-          @media (max-width: 1100px) {
-
-            .sw-navbar-links {
-              display: none !important;
-            }
-
-            .sw-nav-divider {
-              display: none !important;
-            }
-
-          }
-
-
           @media (max-width: 700px) {
 
             .sw-tab {
@@ -1464,13 +1091,6 @@ export function ScrollWorld({
           }
 
 
-          @media (max-width: 600px) {
-
-            .sw-nav-cta span:first-child {
-              display: none;
-            }
-
-          }
 
         `}</style>
 
