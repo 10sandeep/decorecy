@@ -38,7 +38,7 @@ export function CTASection({
       {/* Large watermark brand text */}
       <div style={{
         position: 'absolute',
-        top: '8%',
+        top: '-4%',
         left: '50%',
         transform: 'translateX(-50%)',
         width: '100%',
@@ -46,12 +46,15 @@ export function CTASection({
         fontFamily: 'var(--font-serif)',
         fontSize: 'clamp(6rem, 20vw, 20rem)',
         fontWeight: 700,
-        color: 'rgba(255,255,255,0.055)',
         letterSpacing: '-0.03em',
         lineHeight: 1,
         userSelect: 'none',
         pointerEvents: 'none',
         whiteSpace: 'nowrap',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.0) 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
       }}>
         Decorecy
       </div>
