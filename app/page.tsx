@@ -31,13 +31,13 @@ export default function HomePage() {
             label: 'Step Inside',
           },
         ],
-        eyebrow: 'Premium Interior Design Studio · Bhubaneswar',
-        headline: 'Designing Spaces That Feel Like',
-        headlineHighlight: 'Home.',
+        eyebrow: "Bhubaneswar's Premier Interior Design Studio",
+        headline: 'Spaces That Make You',
+        headlineHighlight: 'Stay.',
         description:
-          'We craft warm, timeless interiors that balance beauty, comfort, and function — thoughtfully designed to elevate your everyday living.',
-        primaryCta:   { label: 'Book Free Consultation', href: '/contact' },
-        secondaryCta: { label: 'View Our Projects',      href: '/projects' },
+          'Great design doesn\'t just look beautiful — it feels inevitable. We craft interiors so perfectly suited to you, every room feels like it was always yours.',
+        primaryCta:   { label: 'Begin Your Transformation', href: '/contact' },
+        secondaryCta: { label: 'View Our Projects',         href: '/projects' },
       }} />
 
       <ServicesGrid />
