@@ -51,10 +51,9 @@ export function CTASection({
         userSelect: 'none',
         pointerEvents: 'none',
         whiteSpace: 'nowrap',
-        background: 'linear-gradient(to bottom, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.0) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
+        color: 'rgba(255,255,255,0.55)',
+        WebkitMaskImage: 'linear-gradient(to bottom, white 30%, transparent 100%)',
+        maskImage: 'linear-gradient(to bottom, white 30%, transparent 100%)',
       }}>
         Decorecy
       </div>
