@@ -51,7 +51,7 @@ export function CTASection({
         userSelect: 'none',
         pointerEvents: 'none',
         whiteSpace: 'nowrap',
-        background: 'linear-gradient(to bottom, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.0) 100%)',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.0) 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
