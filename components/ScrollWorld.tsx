@@ -1772,51 +1772,49 @@ function HeroLayout({
               i
             ) => (
 
-              <span
-                key={i}
-
-                style={{
-                  display:
-                    'inline-block',
-
-                  overflow:
-                    'hidden',
-
-                  verticalAlign:
-                    'bottom',
-                }}
-              >
-
-                <motion.span
+              <span key={i} style={{ display: 'inline' }}>
+                <span
                   style={{
                     display:
                       'inline-block',
-                  }}
 
-                  initial={{
-                    y: '105%',
-                  }}
+                    overflow:
+                      'hidden',
 
-                  animate={{
-                    y: '0%',
-                  }}
-
-                  transition={{
-                    duration: 0.72,
-
-                    delay:
-                      0.30 +
-                      i * 0.07,
-
-                    ease: EASE,
+                    verticalAlign:
+                      'bottom',
                   }}
                 >
 
-                  {word}
-                  {' '}
+                  <motion.span
+                    style={{
+                      display:
+                        'inline-block',
+                    }}
 
-                </motion.span>
+                    initial={{
+                      y: '105%',
+                    }}
 
+                    animate={{
+                      y: '0%',
+                    }}
+
+                    transition={{
+                      duration: 0.72,
+
+                      delay:
+                        0.30 +
+                        i * 0.07,
+
+                      ease: EASE,
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+
+                </span>
+                {' '}
               </span>
 
             )
@@ -2329,15 +2327,15 @@ const headingStyle:
     'var(--font-serif)',
 
   fontSize:
-    'clamp(3.2rem, 6.2vw, 6.3rem)',
+    'clamp(2.6rem, 4.8vw, 5.2rem)',
 
   fontWeight: 700,
 
   letterSpacing:
-    '-0.045em',
+    '-0.02em',
 
   lineHeight:
-    0.94,
+    1.08,
 
   color:
     '#ffffff',
@@ -2345,10 +2343,12 @@ const headingStyle:
   margin: 0,
 
   maxWidth:
-    '1200px',
+    '22ch',
 
   textAlign:
     'center',
+
+  wordSpacing: '0.05em',
 
 };
 
