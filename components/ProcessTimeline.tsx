@@ -97,16 +97,17 @@ export function ProcessTimeline() {
         {/* Heading */}
         <h2 style={{
           fontFamily: 'var(--font-serif)',
-          fontSize: 'clamp(2.2rem, 5vw, 4.2rem)',
-          fontWeight: 700,
-          lineHeight: 1.1,
-          letterSpacing: '-0.025em',
+          fontSize: 'clamp(2.6rem, 5.5vw, 5rem)',
+          fontWeight: 800,
+          lineHeight: 1.08,
+          letterSpacing: '-0.03em',
           color: '#fff',
           textAlign: 'center',
           margin: '0 0 clamp(3rem, 6vw, 5rem)',
         }}>
-          How We Turn Vision Into{' '}
-          <em style={{ color: '#c9a96e', fontStyle: 'italic', fontWeight: 700 }}>
+          How We Turn Vision Into
+          <br />
+          <em style={{ color: '#c9a96e', fontStyle: 'italic', fontWeight: 800 }}>
             Well-Designed
           </em>{' '}
           Spaces
