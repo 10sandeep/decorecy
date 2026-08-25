@@ -135,6 +135,7 @@ export function WhyChooseUs() {
       padding: 'clamp(4rem, 8vw, 7rem) clamp(1.5rem, 4vw, 3rem)',
       position: 'relative',
       overflow: 'hidden',
+      borderRadius: '48px 48px 0 0',
     }}>
       {/* Subtle radial glow */}
       <div style={{

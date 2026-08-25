@@ -108,6 +108,53 @@ export default function HomePage() {
 
       <ProcessTimeline />
 
+      {/* ── Marquee divider ── */}
+      <div style={{
+        background: '#fff',
+        overflow: 'hidden',
+        padding: '18px 0',
+        position: 'relative',
+        zIndex: 1,
+        borderTop: '1px solid rgba(0,0,0,0.06)',
+      }}>
+        <div style={{
+          display: 'flex',
+          width: 'max-content',
+          animation: 'marquee2 30s linear infinite',
+          gap: 0,
+        }}>
+          {[...Array(2)].map((_, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 0, whiteSpace: 'nowrap' }}>
+              {[
+                'Personalized Design',
+                'Quality Craftsmanship',
+                'Transparent Process',
+                'On-Time Delivery',
+                'Local Expertise',
+                'Happy Homeowners',
+                'Decorecy Interiors',
+                '500+ Projects',
+              ].map((text) => (
+                <span key={text} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  <span style={{
+                    fontSize: '0.78rem', fontWeight: 600,
+                    letterSpacing: '0.14em', textTransform: 'uppercase',
+                    color: '#111', padding: '0 28px',
+                  }}>{text}</span>
+                  <span style={{ color: '#c9a96e', fontSize: '0.55rem' }}>◆</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+        <style>{`
+          @keyframes marquee2 {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+          }
+        `}</style>
+      </div>
+
       <WhyChooseUs />
 
       <DesignGallery />
