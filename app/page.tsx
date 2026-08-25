@@ -51,6 +51,61 @@ export default function HomePage() {
         secondaryCta={{ label: 'Book a Design Consultation', href: '/contact' }}
       />
 
+      {/* ── Marquee divider ── */}
+      <div style={{
+        background: '#fff',
+        overflow: 'hidden',
+        padding: '18px 0',
+        position: 'relative',
+        zIndex: 1,
+        borderTop: '1px solid rgba(0,0,0,0.06)',
+      }}>
+        <div style={{
+          display: 'flex',
+          width: 'max-content',
+          animation: 'marquee 28s linear infinite',
+          gap: 0,
+        }}>
+          {[...Array(2)].map((_, i) => (
+            <div key={i} style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0,
+              whiteSpace: 'nowrap',
+            }}>
+              {[
+                'Interior Design',
+                'Bhubaneswar',
+                'Modular Kitchens',
+                '3D Visualisation',
+                'Premium Materials',
+                'End-to-End Execution',
+                'Decorecy Interiors',
+                'Space Planning',
+              ].map((text) => (
+                <span key={text} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  <span style={{
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: '#111',
+                    padding: '0 28px',
+                  }}>{text}</span>
+                  <span style={{ color: '#c9a96e', fontSize: '0.55rem' }}>◆</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+        <style>{`
+          @keyframes marquee {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+          }
+        `}</style>
+      </div>
+
       <ProcessTimeline />
 
       <WhyChooseUs />

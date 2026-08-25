@@ -43,6 +43,9 @@ export function ProcessTimeline() {
       position: 'relative',
       background: '#0a0a0a',
       overflow: 'hidden',
+      borderRadius: '48px 48px 0 0',
+      marginTop: -48,
+      zIndex: 2,
     }}>
       {/* Background image — top portion only */}
       <div style={{
